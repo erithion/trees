@@ -22,6 +22,7 @@ namespace tree_search {
             using augment_type_clean = std::remove_reference_t<std::remove_cv_t<AugmentT>>;
             using node_type_clean = node<value_type_clean, augment_type_clean>;
 
+            // TODO: add const to augment and value. add tests to check that; or private section
             value_type          value_;
             augment_type        augment_;
             ptr_type            left_;
@@ -37,7 +38,8 @@ namespace tree_search {
             node(value_type&& v) // no type deduction hence no universal reference, simple rvalue
                 : value_(std::move(v)), augment_{}, left_(nullptr), right_(nullptr) {}
         };
-
+        
+        // TODO: change Tree name to Node within aux namespace for perception's sake
         template <typename Tree>
         size_t size(const std::unique_ptr<Tree>& tree) {
             if (!tree) return 0;

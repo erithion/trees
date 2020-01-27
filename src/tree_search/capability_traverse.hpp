@@ -37,6 +37,7 @@ namespace tree_search {
         }
     }
 
+    // TODO: implement iterators for traversing
     template <typename Tag, typename Tree, std::enable_if_t<std::is_base_of_v<capability_traverse, Tree>, int> = 0>
     void traverse(Tag&& tag, const Tree& tree, const std::function<void(const typename Tree::value_type&)>& fn) {
         aux::traverse(tree.root_, fn, std::forward<Tag>(tag));

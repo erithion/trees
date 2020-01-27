@@ -7,5 +7,5 @@ Implemented
   * [x] Red-black tree
   * [x] AVL tree
   * [x] Interval tree (based on red-black tree)
-* Fenwick tree
+* [x] Fenwick tree
 

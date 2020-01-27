@@ -59,6 +59,7 @@ namespace tree_search {
             , int>;
     }
 
+    // TODO: implement iterators for searching
     template <typename Tag, typename T, typename Tree, aux::enable_interval_search_t<Tag, T, Tree> = 0>
     void search(Tag&& tag, const Tree& tree, const std::pair<T, T>& interval, const std::function<void(const typename Tree::value_type&)>& fn) {
         aux::search(tree.root_, interval, fn, std::move(tag));

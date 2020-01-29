@@ -18,8 +18,8 @@ namespace tree_search {
             using node_type = node<value_type, augment_type>;
             using ptr_type = std::unique_ptr<node_type>;
 
-            using value_type_clean = std::remove_reference_t<std::remove_cv_t<T>>;
-            using augment_type_clean = std::remove_reference_t<std::remove_cv_t<AugmentT>>;
+            using value_type_clean = std::decay_t<T>;//std::remove_reference_t<std::remove_cv_t<T>>;
+            using augment_type_clean = std::decay_t<AugmentT>;//std::remove_reference_t<std::remove_cv_t<AugmentT>>;
             using node_type_clean = node<value_type_clean, augment_type_clean>;
 
             // TODO: add const to augment and value. add tests to check that; or private section

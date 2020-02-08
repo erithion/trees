@@ -8,4 +8,5 @@ Implemented
   * [x] AVL tree
   * [x] Interval tree (based on red-black tree)
 * [x] Fenwick tree
+* [x] Segment tree
 

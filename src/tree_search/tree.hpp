@@ -66,7 +66,8 @@ namespace tree_search {
     struct tree : public Capabilities... { 
         using value_type = T;
         using augment_type = AugmentT;
-        std::unique_ptr<aux::node<value_type, augment_type>> root_;
+        using node_type = aux::node<value_type, augment_type>;
+        std::unique_ptr<node_type> root_;
     };
 
     template <typename ... pack>

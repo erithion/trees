@@ -11,11 +11,11 @@ namespace tree_search {
 
     namespace aux {
 
-        template <typename Tree>
-        using callback = std::function<void(const typename Tree::value_type&)>;
+        template <typename Node>
+        using callback = std::function<void(const typename Node::value_type&)>;
 
-        template <typename T, typename Tree>
-        void search(const std::unique_ptr<Tree>& tree, const std::pair<T, T>& interval, const callback<Tree>& fn, tag_inorder&&) {
+        template <typename T, typename Node>
+        void search(const std::unique_ptr<Node>& tree, const std::pair<T, T>& interval, const callback<Node>& fn, tag_inorder&&) {
             if (!tree) return;
             if (tree->left_ && tree->left_->augment_.max_ >= interval.first)
                 search(tree->left_, interval, fn, tag_inorder{});
@@ -25,8 +25,8 @@ namespace tree_search {
                 search(tree->right_, interval, fn, tag_inorder{});
         }
 
-        template <typename T, typename Tree>
-        void search(const std::unique_ptr<Tree>& tree, const std::pair<T, T>& interval, const callback<Tree>& fn, tag_preorder&&) {
+        template <typename T, typename Node>
+        void search(const std::unique_ptr<Node>& tree, const std::pair<T, T>& interval, const callback<Node>& fn, tag_preorder&&) {
             if (!tree) return;
             if (interval.first <= tree->value_.second && !(interval.second < tree->value_.first))
                 if (fn) fn(tree->value_);
@@ -36,8 +36,8 @@ namespace tree_search {
                 search(tree->right_, interval, fn, tag_inorder{});
         }
 
-        template <typename T, typename Tree>
-        void search(const std::unique_ptr<Tree>& tree, const std::pair<T, T>& interval, const callback<Tree>& fn, tag_postorder&&) {
+        template <typename T, typename Node>
+        void search(const std::unique_ptr<Node>& tree, const std::pair<T, T>& interval, const callback<Node>& fn, tag_postorder&&) {
             if (!tree) return;
             if (tree->left_ && tree->left_->augment_.max_ >= interval.first)
                 search(tree->left_, interval, fn, tag_inorder{});

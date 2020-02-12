@@ -9,12 +9,12 @@ namespace tree_search {
     struct capability_insert {};
     namespace aux {
 
-        template <typename Tree>
-        void fix_invariant(std::unique_ptr<Tree>& t, capability_insert) { }
+        template <typename Node>
+        void fix_invariant(std::unique_ptr<Node>& t, capability_insert) { }
 
-        template <typename T, typename Tree, typename Tag>
-        void insert(std::unique_ptr<Tree>& tree, T&& v, const Tag& tag) { // universal reference
-            if (!tree) tree = std::make_unique<typename Tree::node_type_clean>(std::forward<T>(v));
+        template <typename T, typename Node, typename Tag>
+        void insert(std::unique_ptr<Node>& tree, T&& v, const Tag& tag) { // universal reference
+            if (!tree) tree = std::make_unique<typename Node::node_type_clean>(std::forward<T>(v));
             else if (v < tree->value_) insert(tree->left_, std::forward<T>(v), tag);
             else if (v > tree->value_) insert(tree->right_, std::forward<T>(v), tag);
             fix_invariant(tree, tag);

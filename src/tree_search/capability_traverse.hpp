@@ -6,9 +6,20 @@ namespace tree_search {
   
     template <typename It>
     struct iterators {
-        It begin;
-        It end = {};
+        It begin_;
+        It end_ = {};
     };
+
+    // for range loop support.
+    // absence of begin/end methods in a range class r leads to ADL of begin/end functions.
+    template<typename It>
+    It begin(const iterators<It>& r) {
+        return r.begin_;
+    }
+    template<typename It>
+    It end(const iterators<It>& r) {
+        return r.end_;
+    }
 
     struct capability_traverse {};
 

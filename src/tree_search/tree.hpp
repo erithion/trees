@@ -39,21 +39,20 @@ namespace tree_search {
                 : value_(std::move(v)), augment_{}, left_(nullptr), right_(nullptr) {}
         };
         
-        // TODO: change Tree name to Node within aux namespace for perception's sake
-        template <typename Tree>
-        size_t size(const std::unique_ptr<Tree>& tree) {
+        template <typename Node>
+        size_t size(const std::unique_ptr<Node>& tree) {
             if (!tree) return 0;
             return 1 + size(tree->left_) + size(tree->right_);
         }
 
-        template <typename Tree>
-        int height(const std::unique_ptr<Tree>& tree) {
+        template <typename Node>
+        int height(const std::unique_ptr<Node>& tree) {
             if (!tree) return 0;
             return 1 + std::max(height(tree->left_), height(tree->right_));
         }
 
-        template <typename Tree>
-        std::pair<bool, int> perfect(const std::unique_ptr<Tree>& tree) {  // max height of left must be greater than max height of right
+        template <typename Node>
+        std::pair<bool, int> perfect(const std::unique_ptr<Node>& tree) {  // max height of left must be greater than max height of right
             if (!tree) return std::make_pair(true, 0); // the flag signals if the node along with its subtrees has been perfect so far
                                                        // int contains the maximum height of the node along with its subtrees
             auto l = perfect(tree->left_);

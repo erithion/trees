@@ -95,10 +95,10 @@ namespace tree_search {
     template <typename Node, typename TraverseTag>
     struct traverse_iterator
         : protected aux::selector<Node, TraverseTag> { // by TraverseTag choose an appropriate type from above to inherit from.
-                                                       // so called "template method"-pattern is justified here. 
-                                                       // otherwise there would have been 3 iterators, potentially error prone
-                                                       // where in one of them you may easily forget to make some required alias 
-                                                       // or to implement some important method.  
+                                                       // so called "template method"-pattern is entirely justified here. 
+                                                       // otherwise there would have been 3 potentially error prone iterators
+                                                       // where in one of them during refactoring one may easily loose 
+                                                       // some required alias or method.  
         using iterator_category = std::forward_iterator_tag;
         using value_type = typename Node::value_type;
         using difference_type = std::ptrdiff_t;

@@ -9,10 +9,14 @@ namespace tree_search {
     namespace aux {
 
         template <typename Node>
+        struct cont {
+            Node* ptr_ = nullptr;
+            bool visited_ = false; // Signals if the current node's children have been already pushed on stack
+            bool operator ==(const cont& other) const { return other.visited_ == this->visited_ && other.ptr_ == this->ptr_; }
+        };
+
+        template <typename Node>
         struct preorder {
-            void init(Node* root) {
-                this->s_.push(root);
-            }
             void step() {
                 if (this->s_.empty()) return;
                 auto last = this->s_.top();
@@ -20,22 +24,17 @@ namespace tree_search {
                 if (last->right_) this->s_.push(last->right_.get());
                 if (last->left_) this->s_.push(last->left_.get());
             }
-            bool equal(const preorder& other) const { return this->s_ == other.s_; }
-            const typename Node::value_type& top_value() const { return this->s_.top()->value_; }
             std::stack<Node*> s_ = {};
         };
 
         template <typename Node>
         struct inorder {
-            void init(Node* root) {
-                this->s_.emplace(cont{ root });
-                this->step();
-            }
+            using cont = cont<Node>;
             void step() {
                 if (this->s_.empty()) return;
 
-                if (this->s_.top().exit_) this->s_.pop();
-                if (!this->s_.empty() && !this->s_.top().exit_)
+                if (this->s_.top().visited_) this->s_.pop();
+                if (!this->s_.empty() && !this->s_.top().visited_)
                     for (auto p = this->s_.top().ptr_; p; p = p->left_.get()) {
                         this->s_.pop();
                         if (p->right_) this->s_.emplace(cont{ p->right_.get() });
@@ -43,40 +42,23 @@ namespace tree_search {
                         if (p->left_) this->s_.emplace(cont{ p->left_.get(), true });
                     }
             }
-            bool equal(const inorder& other) const { return this->s_ == other.s_; }
-            const typename Node::value_type& top_value() const { return this->s_.top().ptr_->value_; }
-            struct cont {
-                Node* ptr_ = nullptr;
-                bool exit_ = false;
-                bool operator ==(const cont& other) const { return other.exit_ == this->exit_ && other.ptr_ == this->ptr_; }
-            };
             std::stack<cont> s_ = {};
         };
 
         template <typename Node>
         struct postorder {
-            void init(Node* root) {
-                this->s_.emplace(cont{ root });
-                this->step();
-            }
+            using cont = cont<Node>;
             void step() {
                 if (this->s_.empty()) return;
 
-                if (this->s_.top().handled_) this->s_.pop();
-                while (!this->s_.empty() && !this->s_.top().handled_) { // push children
+                if (this->s_.top().visited_) this->s_.pop();
+                while (!this->s_.empty() && !this->s_.top().visited_) { // push children
                     auto& top = this->s_.top();
-                    top.handled_ = true;
+                    top.visited_ = true;
                     if (top.ptr_->right_) this->s_.emplace(cont{ top.ptr_->right_.get() });
                     if (top.ptr_->left_) this->s_.emplace(cont{ top.ptr_->left_.get() });
                 }
             }
-            bool equal(const postorder& other) const { return this->s_ == other.s_; }
-            const typename Node::value_type& top_value() const { return this->s_.top().ptr_->value_; }
-            struct cont {
-                Node* ptr_ = nullptr;
-                volatile bool handled_ = false; // true if children were handled
-                bool operator ==(const cont& other) const { return other.handled_ == this->handled_ && other.ptr_ == this->ptr_; }
-            };
             std::stack<cont> s_ = {};
         };
 
@@ -94,11 +76,10 @@ namespace tree_search {
 
     template <typename Node, typename TraverseTag>
     struct traverse_iterator
-        : protected aux::selector<Node, TraverseTag> { // by TraverseTag choose an appropriate type from above to inherit from.
-                                                       // so called "template method"-pattern is entirely justified here. 
+        : protected aux::selector<Node, TraverseTag> { // by TraverseTag choose the type from above to inherit from.
+                                                       // so called "template method"-pattern has never been more justified. 
                                                        // otherwise there would have been 3 potentially error prone iterators
-                                                       // where in one of them during refactoring one may easily loose 
-                                                       // some required alias or method.  
+                                                       // where in one of them some alias/method might get lost one day during refactoring.  
         using iterator_category = std::forward_iterator_tag;
         using value_type = typename Node::value_type;
         using difference_type = std::ptrdiff_t;
@@ -106,10 +87,19 @@ namespace tree_search {
         using reference = const value_type&;
 
         traverse_iterator() = default; // end iterator
-        explicit traverse_iterator(Node* root) { 
-            this->init(root); 
+
+        // for preorder
+        template <typename U = TraverseTag, std::enable_if_t<std::is_same_v<aux::selector<Node, U>, aux::preorder<Node>>, int> = 0>
+        explicit traverse_iterator(Node* root) {
+            this->s_.push(root);
         }
-        traverse_iterator& operator++() { 
+        // for everything else but preorder
+        template <typename U = TraverseTag, std::enable_if_t<!std::is_same_v<aux::selector<Node, U>, aux::preorder<Node>>, int> = 0>
+        explicit traverse_iterator(Node* root) {
+            this->s_.emplace(cont{ root });
+            this->step();
+        }
+        traverse_iterator& operator++() {
             this->step(); 
             return *this; 
         }
@@ -119,13 +109,22 @@ namespace tree_search {
             return retval; 
         }
         bool operator==(traverse_iterator other) const { 
-            return this->equal(other); 
+            return this->s_ == other.s_;
         }
         bool operator!=(traverse_iterator other) const { 
             return !(*this == other); 
         }
-        reference operator*() const { 
-            return this->top_value(); 
+        //for preorder
+        template <typename U = TraverseTag>
+        std::enable_if_t<std::is_same_v<aux::selector<Node, U>, aux::preorder<Node>>, reference>
+            operator*() const {
+            return this->s_.top()->value_;
+        }
+        // for everything else but preorder
+        template <typename U = TraverseTag>
+        std::enable_if_t<!std::is_same_v<aux::selector<Node, U>, aux::preorder<Node>>, reference>
+            operator*() const {
+            return this->s_.top().ptr_->value_;
         }
     };
 }

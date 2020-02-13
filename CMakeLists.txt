@@ -1,4 +1,5 @@
 cmake_minimum_required          ( VERSION 3.12.0 )
+project(algorithms)
 
 if( NOT DEFINED BUILDDIR )
     set                         ( BUILDDIR          ${CMAKE_CURRENT_SOURCE_DIR}/bin )

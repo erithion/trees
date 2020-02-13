@@ -11,7 +11,7 @@ namespace tree_search {
     };
 
     // for range loop support.
-    // absence of begin/end methods in a range class r leads to ADL of begin/end functions.
+    // absence of begin/end methods in a range class r leads to ADL of begin/end functions and ADL expects them to be here.
     template<typename It>
     It begin(const iterators<It>& r) {
         return r.begin_;

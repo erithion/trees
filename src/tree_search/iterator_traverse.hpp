@@ -108,10 +108,10 @@ namespace tree_search {
             ++(*this); 
             return retval; 
         }
-        bool operator==(traverse_iterator other) const { 
+        bool operator==(const traverse_iterator& other) const { 
             return this->s_ == other.s_;
         }
-        bool operator!=(traverse_iterator other) const { 
+        bool operator!=(const traverse_iterator& other) const { 
             return !(*this == other); 
         }
         //for preorder

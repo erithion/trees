@@ -1,19 +1,14 @@
 #pragma once
 
 #include "type_traverse.hpp"
+#include "iterator.hpp"
 
 #include <stack>
 
 namespace tree_search {
 
+    // TODO: consider moving step into iterator
     namespace aux {
-
-        template <typename Node>
-        struct cont {
-            Node* ptr_ = nullptr;
-            bool visited_ = false; // Signals if the current node's children have been already pushed on stack
-            bool operator ==(const cont& other) const { return other.visited_ == this->visited_ && other.ptr_ == this->ptr_; }
-        };
 
         template <typename Node>
         struct preorder {

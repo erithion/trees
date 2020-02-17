@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "type_traverse.hpp"
+#include "iterator.hpp"
 #include "tree_interval.hpp"
 #include "iterator_search_interval.hpp"
 

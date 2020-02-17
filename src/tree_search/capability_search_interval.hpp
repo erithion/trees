@@ -16,22 +16,20 @@ namespace tree_search {
             using cont = cont<Node>;
             using value_type = typename Node::value_type;
             void step() {
-                if (this->stack_.empty()) return;
-
-                do {
-                    auto last = this->stack_.top();
+                if (!this->stack_.empty() && this->stack_.top().visited_) this->stack_.pop();
+                // nodes on the stack are always rearranged in order (from the top): top; left; right.
+                // upon the loop exit we always have the next highest node within the interval bounds.
+                while (!this->stack_.empty() && !this->stack_.top().visited_) {
+                    auto p = this->stack_.top().ptr_;
                     this->stack_.pop();
-                    if (last.visited_) continue;
-                    if (last.ptr_->right_ && last.ptr_->value_.first <= this->bounds_.second)
-                        this->stack_.emplace(cont{ last.ptr_->right_.get() });
-                    if (last.ptr_->left_ && last.ptr_->left_->augment_.max_ >= this->bounds_.first)
-                        this->stack_.emplace(cont{ last.ptr_->left_.get() });
+                    if (p->right_ && p->right_->value_.first <= this->bounds_.second)
+                        this->stack_.emplace(cont{ p->right_.get() });
+                    if (p->left_ && p->left_->augment_.max_ >= this->bounds_.first)
+                        this->stack_.emplace(cont{ p->left_.get() });
+                    if (this->bounds_.first <= p->value_.second && this->bounds_.second >= p->value_.first)
+                        this->stack_.emplace(cont{ p, true });
+                }
 
-                    if (this->bounds_.first <= last.ptr_->value_.second && this->bounds_.second >= last.ptr_->value_.first) {
-                        last.visited_ = true;
-                        this->stack_.emplace(last);
-                    }
-                } while (!this->stack_.empty() && !this->stack_.top().visited_);
             }
             std::stack<cont> stack_ = {};
             value_type       bounds_ = {};

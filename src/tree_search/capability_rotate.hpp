@@ -33,6 +33,6 @@ namespace tree_search {
     // version for the outermost tree container
     template <typename Tag, typename Tree, std::enable_if_t<std::is_base_of_v<capability_rotate, Tree>, int> = 0>
     void rotate(Tree& tree, Tag&& tag) { // universal reference
-        rotate(tree.root_, std::forward<Tag>(tag));
+        rotate(aux::access(tree), std::forward<Tag>(tag));
     }
 }

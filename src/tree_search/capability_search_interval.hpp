@@ -28,6 +28,6 @@ namespace tree_search {
     template <typename Tag, typename T, typename Tree, aux::enable_interval_search_t<Tag, T, Tree> = 0>
     auto search(Tag&& tag, const Tree& tree, const std::pair<T, T>& interval) {
         using iterator_type = tree_search::iterator_search_interval<typename Tree::node_type, Tag>;
-        return iterators<iterator_type>{ iterator_type(tree.root_.get(), interval), iterator_type(interval) };
+        return iterators<iterator_type>{ iterator_type(aux::access(tree).get(), interval), iterator_type(interval) };
     }
 }

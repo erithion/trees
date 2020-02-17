@@ -26,11 +26,11 @@ namespace tree_search {
     // TODO: implement remove
     template <typename T, typename Tree, std::enable_if_t<std::is_base_of_v<capability_insert, Tree>, int> = 0>
     void insert(Tree& tree, T&& v) { // universal reference
-        aux::insert(tree.root_, std::forward<T>(v), capability_insert{});
+        aux::insert(aux::access(tree), std::forward<T>(v), capability_insert{});
     }
 
     template <typename T, typename Tree, std::enable_if_t<std::is_base_of_v<capability_insert, Tree>, int> = 0>
     void insert(Tree& tree, std::initializer_list<T> ls) {
-        for (auto&& v : ls) aux::insert(tree.root_, std::move(v), capability_insert{});
+        for (auto&& v : ls) aux::insert(aux::access(tree), std::move(v), capability_insert{});
     }
 }

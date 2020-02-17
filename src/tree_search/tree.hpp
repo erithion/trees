@@ -1,10 +1,8 @@
 #pragma once 
 
-#include <memory>
-#include <vector>
-#include <functional>
+#include <memory> // unique_ptr
 #include <type_traits>
-#include <algorithm>
+#include <algorithm> // max
 
 namespace tree_search {
     namespace aux {
@@ -22,23 +20,27 @@ namespace tree_search {
             using augment_type_clean = std::decay_t<AugmentT>;//std::remove_reference_t<std::remove_cv_t<AugmentT>>;
             using node_type_clean = node<value_type_clean, augment_type_clean>;
 
-            // TODO: add const to augment and value. add tests to check that; or private section
-            value_type          value_;
-            augment_type        augment_;
+            const value_type    value_; 
+            augment_type        augment_; // non-const as augment might require changes
             ptr_type            left_;
             ptr_type            right_;
 
-            node(const value_type& v)
-                : value_(v), augment_{}, left_(nullptr), right_(nullptr) {}
-            node(const value_type& v, const augment_type& a)
-                : value_(v), augment_(a), left_(nullptr), right_(nullptr) {}
-
-            node(value_type&& v, augment_type&& a) // no type deduction hence no universal reference, simple rvalue
-                : value_(std::move(v)), augment_(std::move(a)), left_(nullptr), right_(nullptr) {}
-            node(value_type&& v) // no type deduction hence no universal reference, simple rvalue
-                : value_(std::move(v)), augment_{}, left_(nullptr), right_(nullptr) {}
+            // By using templated constructors we force the compiler to perform type deduction,
+            // so that it would apply the rule of universal references to the deducted value_type and augmented_type.
+            // Otherwise we would have to implement pairs of separate constructors for rvalue and lvalue
+            template <typename V = value_type, typename A = augment_type>
+            node(V&& v, A&& a)
+                : value_(std::forward<V>(v)), augment_(std::forward<A>(a)), left_(nullptr), right_(nullptr) {}
+            template <typename V = value_type>
+            node(V&& v)
+                : value_(std::forward<V>(v)), augment_{}, left_(nullptr), right_(nullptr) {}
         };
         
+        template <typename Tree>
+        inline auto&& access(Tree&& tree) { // must be used internally or in tests.
+            return tree.root_;
+        }
+
         template <typename Node>
         size_t size(const std::unique_ptr<Node>& tree) {
             if (!tree) return 0;
@@ -66,27 +68,32 @@ namespace tree_search {
         using value_type = T;
         using augment_type = AugmentT;
         using node_type = aux::node<value_type, augment_type>;
-        std::unique_ptr<node_type> root_;
+    private:
+        std::unique_ptr<node_type> root_; // no direct access. if anything, an access must be performed consiously via aux::access
+
+        template <typename Tree>
+        friend inline auto&& aux::access(Tree&& tree);
     };
 
     template <typename ... pack>
     size_t size(const tree<pack...>& tree) {
-        return aux::size(tree.root_);
+        return aux::size(aux::access(tree));
     }
 
     template <typename ... pack>
     size_t height(const tree<pack...>& tree) {
-        return aux::height(tree.root_);
+        return aux::height(aux::access(tree));
     }
 
     template <typename ... pack>
     bool balanced(const tree<pack...>& tree) {
-        if (!tree.root_) return true;
-        return std::abs(aux::height(tree.root_->left_) - aux::height(tree.root_->right_)) <= 1;
+        auto&& root = aux::access(tree);
+        if (!root) return true;
+        return std::abs(aux::height(root->left_) - aux::height(root->right_)) <= 1;
     }
 
     template <typename ... pack>
     bool perfect(const tree<pack...>& tree) {
-        return aux::perfect(tree.root_).first;
+        return aux::perfect(aux::access(tree)).first;
     }
 }

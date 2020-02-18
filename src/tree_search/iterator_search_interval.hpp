@@ -93,8 +93,9 @@ namespace tree_search {
             // rearrangement on the stack is always in order (from the top): left; right; top.
             while (!this->stack_.empty() && !this->stack_.top().visited_) {
                 auto p = this->stack_.top().ptr_;
+                this->stack_.pop();
                 if (this->intersect(p))
-                    this->stack_.top().visited_ = true;
+                    this->stack_.emplace(cont{ p, true });
                 if (this->intersect_right(p))
                     this->stack_.emplace(cont{ p->right_.get() });
                 if (this->intersect_left(p))

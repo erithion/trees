@@ -13,9 +13,6 @@ namespace tree_search {
 
     namespace aux {
 
-        template <typename T, typename ... Ts>
-        constexpr bool is_one_of_v = std::disjunction_v<std::is_same<T, Ts>...>;
-
         // Enables int type if interval tree requirements are satisfied
         template <typename Tag, typename T, typename Tree>
         using enable_interval_search_t =

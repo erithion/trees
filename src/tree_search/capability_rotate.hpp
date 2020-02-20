@@ -1,12 +1,11 @@
 #pragma once
 
+#include "type_capability.hpp"
+
 #include <memory>
-#include <functional>
 #include <type_traits>
 
 namespace tree_search {
-
-    struct capability_rotate {};
 
     struct rotate_left_tag {};
     struct rotate_right_tag {};

@@ -1,12 +1,12 @@
 #pragma once
 
+#include "type_capability.hpp"
+
 #include <memory>
-#include <functional>
 #include <type_traits>
 
 namespace tree_search {
  
-    struct capability_insert {};
     namespace aux {
 
         template <typename Node>
@@ -22,7 +22,6 @@ namespace tree_search {
     }
 
     // TODO: check/resolve an existing element insertion
-    // TODO: implement search
     // TODO: implement remove
     template <typename T, typename Tree, std::enable_if_t<std::is_base_of_v<capability_insert, Tree>, int> = 0>
     void insert(Tree& tree, T&& v) { // universal reference

@@ -52,15 +52,15 @@ namespace tree_search {
     }
 
     // generic. eliminates the need to define a postfix ++ operator within an iterator.
-    template <typename Iterator>
-    Iterator operator++(Iterator& i, int) {
-        Iterator retval = i;
+    template <typename It>
+    It operator++(It& i, int) {
+        It retval = i;
         ++i;
         return retval;
     }
     // generic. eliminates the need to define != operator within an iterator.
-    template <typename Iterator>
-    bool operator!=(const Iterator& cur, const Iterator& other) {
+    template <typename It>
+    bool operator!=(const It& cur, const It& other) {
         return !(cur == other);
     }
 }

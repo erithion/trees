@@ -45,10 +45,9 @@ namespace tree_search {
     template <typename Tag, typename Tree, aux::enable_search_t<Tag, Tree> = 0>
     auto search(Tag&& tag, const Tree& tree, const predicate<Tree>& fn) {
 
-        using node = aux::node_type_t<Tree>;
         using cond = aux::search_condition<Tree>;
         using truth = aux::search_truth<Tree>;
-        using iterator_type = tree_search::iterator<node, Tag, cond, truth, truth>;
+        using iterator_type = tree_search::iterator<Tree, Tag, cond, truth, truth>;
 
         return iterators<iterator_type>{ iterator_type(aux::access(tree).get(), fn), iterator_type() };
     }

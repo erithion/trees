@@ -51,11 +51,10 @@ namespace tree_search {
     template <typename Tag, typename T, typename Tree, aux::enable_interval_search_t<Tag, T, Tree> = 0>
     auto search(Tag&& tag, const Tree& tree, const std::pair<T, T>& interval) {
 
-        using node = aux::node_type_t<Tree>;
         using left = aux::interval_intersect<Tree, aux::spec_left>;
         using right = aux::interval_intersect<Tree, aux::spec_right>;
         using cur = aux::interval_intersect<Tree, aux::spec_cur>;
-        using iterator_type = tree_search::iterator<node, Tag, cur, left, right>;
+        using iterator_type = tree_search::iterator<Tree, Tag, cur, left, right>;
 
         return iterators<iterator_type>{ iterator_type(aux::access(tree).get(), interval), iterator_type() };
     }

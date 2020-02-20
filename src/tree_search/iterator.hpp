@@ -12,35 +12,36 @@ namespace tree_search {
     namespace aux {
 
         // to ease tree traversing implementation.
-        template <typename Node>
+        template <typename Tree>
         struct cont {
-            Node* ptr_ = nullptr;
-            bool visited_ = false; // Signals if the current node's children have been already pushed on stack.
+            const aux::node_type_t<Tree>* ptr_ = nullptr;
+            bool                          visited_ = false; // Signals if the current node's children have been already pushed on stack.
             bool operator ==(const cont& other) const { return other.visited_ == this->visited_ && other.ptr_ == this->ptr_; }
         };
 
-        template <typename Node>
+        template <typename Tree>
         struct universal_truth {
-            inline bool operator()(const Node*) const { return true; }
+            inline bool operator()(const aux::node_type_t<Tree>*) const { return true; }
         };
     }
 
-    template <typename Node, typename TraverseTag
-             , typename IntersectNode = aux::universal_truth<Node>
-             , typename IntersectLeftChild = aux::universal_truth<Node>
-             , typename IntersectRightChild = aux::universal_truth<Node>>
+    template <typename Tree, typename TraverseTag
+             , typename IntersectNode = aux::universal_truth<Tree>
+             , typename IntersectLeftChild = aux::universal_truth<Tree>
+             , typename IntersectRightChild = aux::universal_truth<Tree>>
     struct iterator {
 
         using iterator_category = std::forward_iterator_tag;
-        using value_type = typename Node::value_type;
+        using value_type = aux::value_type_t<Tree>;
         using difference_type = std::ptrdiff_t;
         using pointer = const value_type*;
         using reference = const value_type&;
 
+        using node_type = aux::node_type_t<Tree>;
         iterator() = default;
 
         template <typename ... U>
-        iterator(const Node* root, U&&... u)
+        iterator(const node_type* root, U&&... u) // TODO: confirm you need universal references here
             : intersect_(u...), intersect_left_(u...), intersect_right_(u...) {
             this->stack_.emplace(cont{ root });
             this->step();
@@ -59,7 +60,7 @@ namespace tree_search {
         using intersect_left = IntersectLeftChild;
         using intersect_right = IntersectRightChild;
         using intersect = IntersectNode;
-        using cont = aux::cont<const Node>;
+        using cont = aux::cont<node_type>;
 
         template <typename U = TraverseTag, std::enable_if_t<std::is_same_v<U, tag_preorder>, int> = 0>
         void step() {

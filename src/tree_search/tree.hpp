@@ -20,8 +20,8 @@ namespace tree_search {
             using augment_type_clean = std::decay_t<AugmentT>;//std::remove_reference_t<std::remove_cv_t<AugmentT>>;
             using node_type_clean = node<value_type_clean, augment_type_clean>;
 
-            const value_type    value_; 
-            augment_type        augment_; // non-const as augment might require changes
+            value_type          value_; 
+            augment_type        augment_;
             ptr_type            left_;
             ptr_type            right_;
 

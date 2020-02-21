@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <stack>
 
 namespace tree_search {
  
@@ -13,17 +14,21 @@ namespace tree_search {
         void fix_invariant(std::unique_ptr<Node>& t, capability_remove) { }
 
         template <typename T, typename Node, typename Tag>
-        void remove(std::unique_ptr<Node>& tree, const T& v, const Tag& tag) { // universal reference
+        void remove(std::unique_ptr<Node>& tree, const T& v, const Tag& tag) {
             if (!tree) return;
             else if (v < tree->value_) remove(tree->left_, v, tag);
             else if (v > tree->value_) remove(tree->right_, v, tag);
             else { // found. remove with "rotate" left
                 auto left = std::move(tree->left_);
                 tree = std::move(tree->right_);
-                auto p = std::ref(tree);
-                while (p.get()) 
-                    p = std::ref(p.get()->left_);
-                p.get() = std::move(left);
+                std::stack<decltype(std::ref(tree))> s = {};
+                s.push(tree);
+                while (s.top().get()) s.push(s.top().get()->left_);
+                s.top().get() = std::move(left);
+                for (; !s.empty(); s.pop()) fix_invariant(s.top().get(), tag);
+//                auto p = std::ref(tree);
+//                while (p.get()) p = std::ref(p.get()->left_);
+//                p.get() = std::move(left);
             }
             fix_invariant(tree, tag);
         }

@@ -18,17 +18,25 @@ namespace tree_search {
             if (!tree) return;
             else if (v < tree->value_) remove(tree->left_, v, tag);
             else if (v > tree->value_) remove(tree->right_, v, tag);
-            else { // found. remove with "rotate" left
-                auto left = std::move(tree->left_);
-                tree = std::move(tree->right_);
-                std::stack<decltype(std::ref(tree))> s = {};
-                s.push(tree);
-                while (s.top().get()) s.push(s.top().get()->left_);
-                s.top().get() = std::move(left);
-                for (; !s.empty(); s.pop()) fix_invariant(s.top().get(), tag);
-//                auto p = std::ref(tree);
-//                while (p.get()) p = std::ref(p.get()->left_);
-//                p.get() = std::move(left);
+            else { // found
+                auto p = std::ref(tree);
+                if (tree->left_ && tree->right_) {
+                    for(p = tree->right_; p.get()->left_; p = p.get()->left_);
+                    tree->value_ = std::move(p.get()->value_);
+                } 
+                else if (tree->left_) {
+                    tree->value_ = std::move(tree->left_->value_);
+                    p = tree->left_;
+                }
+                else if (tree->right_) {
+                    tree->value_ = std::move(tree->right_->value_);
+                    p = tree->right_;
+                }
+                else {
+                    tree = nullptr;
+                    return;
+                }
+                remove(p.get(), p.get()->value_, tag);
             }
             fix_invariant(tree, tag);
         }

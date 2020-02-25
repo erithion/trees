@@ -24,7 +24,7 @@ namespace tree_search {
 
             template <typename U = SpecTag, std::enable_if_t<std::is_same_v<U, spec_left>, int> = 0>
             inline bool operator()(const aux::node_type_t<Tree>* p) const { // left child's max border MIGHT get smaller with each next step down the tree 
-                return p->left_ && p->left_->augment_.max_ >= this->bounds_.first;
+                return p->left_ && p->left_->max_ >= this->bounds_.first;
             }
 
             template <typename U = SpecTag, std::enable_if_t<std::is_same_v<U, spec_right>, int> = 0>

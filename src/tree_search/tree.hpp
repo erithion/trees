@@ -10,7 +10,8 @@ namespace tree_search {
         struct empty {};
 
         template <typename T, typename AugmentT>
-        struct node {
+        struct node 
+            : public AugmentT {
             using value_type = T;
             using augment_type = AugmentT;
             using node_type = node<value_type, augment_type>;
@@ -21,19 +22,15 @@ namespace tree_search {
             using node_type_clean = node<value_type_clean, augment_type_clean>;
 
             value_type          value_; 
-            augment_type        augment_;
             ptr_type            left_;
             ptr_type            right_;
 
             // By using templated constructors we force the compiler to perform type deduction,
             // so that it would apply the rule of universal references to the deducted value_type and augmented_type.
-            // Otherwise we would have to implement pairs of separate constructors for rvalue and lvalue
-            template <typename V = value_type, typename A = augment_type>
-            node(V&& v, A&& a)
-                : value_(std::forward<V>(v)), augment_(std::forward<A>(a)), left_(nullptr), right_(nullptr) {}
+            // Otherwise we would have to implement pair of separate constructors for rvalue and lvalue
             template <typename V = value_type>
-            node(V&& v)
-                : value_(std::forward<V>(v)), augment_{}, left_(nullptr), right_(nullptr) {}
+            explicit node(V&& v)
+                : augment_type(), value_(std::forward<V>(v)), left_(nullptr), right_(nullptr) {}
         };
         
         template <typename Tree>

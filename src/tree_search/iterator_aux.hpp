@@ -25,6 +25,16 @@ namespace tree_search {
             using type = typename Node;
         };
 
+        template <typename Tree, typename T2 = typename Tree::node_type>
+        struct ptr_type {
+            using type = typename Tree::ptr_type;
+        };
+
+        template <typename Node>
+        struct ptr_type<Node, Node> {
+            using type = typename Node::ptr_type;
+        };
+
         // Finds value_type of type T irrelevant to whether T is a tree node or the tree itself
         template <typename T>
         using value_type_t = typename value_type<T>::type;
@@ -32,6 +42,9 @@ namespace tree_search {
         // Finds node_type of type T irrelevant to whether T is a tree node or the tree itself
         template <typename T>
         using node_type_t = typename node_type<T>::type;
+
+        template <typename T>
+        using ptr_type_t = typename ptr_type<T>::type;
     }
 
     template <typename It>

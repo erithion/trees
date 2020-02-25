@@ -68,6 +68,7 @@ namespace tree_search {
         using value_type = T;
         using augment_type = AugmentT;
         using node_type = aux::node<value_type, augment_type>;
+        using ptr_type = typename node_type::ptr_type;
     private:
         std::unique_ptr<node_type> root_; // no direct access. if anything, an access must be performed consiously via aux::access
 

@@ -40,15 +40,15 @@ namespace tree_search {
         };
 
         // Enables int type if interval tree requirements are satisfied
-        template <typename Tag, typename T, typename Tree>
+        template <typename Tag, typename Interval, typename Tree>
         using enable_interval_search_t =
             std::enable_if_t< std::is_base_of_v<capability_search_interval, Tree>
-                                && std::is_same_v<typename Tree::augment_type, aux::interval_augment<T>> // only for trees with interval_augment type within
-                            , int>;
+                && std::is_same_v<typename Tree::augment_type, aux::interval_augment<Interval, aux::node_type_t<Tree>>> // only for trees with interval_augment type within
+            , int>;
     }
 
-    template <typename Tag, typename T, typename Tree, aux::enable_interval_search_t<Tag, T, Tree> = 0>
-    auto search(Tag&& tag, const Tree& tree, const std::pair<T, T>& interval) {
+    template <typename Tag, typename Interval, typename Tree, aux::enable_interval_search_t<Tag, Interval, Tree> = 0>
+    auto search(Tag&& tag, const Tree& tree, const Interval& interval) {
 
         using left = aux::interval_intersect<Tree, aux::spec_left>;
         using right = aux::interval_intersect<Tree, aux::spec_right>;

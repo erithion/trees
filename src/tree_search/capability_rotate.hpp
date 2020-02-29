@@ -10,16 +10,15 @@ namespace tree_search {
     struct rotate_left_tag {};
     struct rotate_right_tag {};
 
-    // version for a node-like tree
+    // versions for a node-like tree
     template <typename Node>
     void rotate(std::unique_ptr<Node>& cur, rotate_right_tag&&) {
         if (!cur) return;
-        auto left = std::move(cur->left_);
-        cur->left_ = std::move(left->right_);
+        auto left = std::move(cur->left_); // cur's parent ok; left's right and left are empty :( they were bound to cur->left
+        cur->left_ = std::move(left->right_); // left->rights's parent points on self because it was bound previously to cur->left
         left->right_ = std::move(cur);
         cur = std::move(left);
     }
-    // version for a node-like tree
     template <typename Node>
     void rotate(std::unique_ptr<Node>& cur, rotate_left_tag&&) {
         if (!cur) return;

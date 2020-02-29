@@ -7,19 +7,16 @@
 namespace tree_search {
     namespace aux {
 
+        template <typename, typename>
         struct empty {};
 
-        template <typename T, typename AugmentT>
+        template <typename Element, template <typename /*Element*/, typename /*Node*/> typename Augment>
         struct node 
-            : public AugmentT {
-            using value_type = T;
-            using augment_type = AugmentT;
-            using node_type = node<value_type, augment_type>;
+            : public Augment<Element, node<Element, Augment>> { // employing Curiously Recurring Template Pattern
+            using value_type = Element;
+            using augment_type = Augment<Element, node>;
+            using node_type = node;
             using ptr_type = std::unique_ptr<node_type>;
-
-            using value_type_clean = std::decay_t<T>;//std::remove_reference_t<std::remove_cv_t<T>>;
-            using augment_type_clean = std::decay_t<AugmentT>;//std::remove_reference_t<std::remove_cv_t<AugmentT>>;
-            using node_type_clean = node<value_type_clean, augment_type_clean>;
 
             value_type          value_; 
             ptr_type            left_;
@@ -28,9 +25,9 @@ namespace tree_search {
             // By using templated constructors we force the compiler to perform type deduction,
             // so that it would apply the rule of universal references to the deducted value_type and augmented_type.
             // Otherwise we would have to implement pair of separate constructors for rvalue and lvalue
-            template <typename V = value_type>
-            explicit node(V&& v)
-                : augment_type(), value_(std::forward<V>(v)), left_(nullptr), right_(nullptr) {}
+            template <typename V = value_type, typename ... AugPack>
+            explicit node(V&& v, AugPack&&... p)
+                : augment_type(std::forward<AugPack>(p)...), value_(std::forward<V>(v)), left_(nullptr), right_(nullptr) {}
         };
         
         template <typename Tree>
@@ -60,11 +57,11 @@ namespace tree_search {
         }
     }
 
-    template <typename T, typename AugmentT, typename ... Capabilities>
+    template <typename Element, template <typename /*Element*/, typename /*Node*/> typename Augment, typename ... Capabilities>
     struct tree : public Capabilities... { 
-        using value_type = T;
-        using augment_type = AugmentT;
-        using node_type = aux::node<value_type, augment_type>;
+        using value_type = Element;
+        using node_type = aux::node<value_type, Augment>;
+        using augment_type = typename node_type::augment_type;
         using ptr_type = typename node_type::ptr_type;
     private:
         std::unique_ptr<node_type> root_; // no direct access. if anything, an access must be performed consiously via aux::access

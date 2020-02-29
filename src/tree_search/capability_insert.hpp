@@ -14,7 +14,8 @@ namespace tree_search {
 
         template <typename T, typename Node, typename Tag>
         void insert(std::unique_ptr<Node>& tree, T&& v, const Tag& tag) { // universal reference
-            if (!tree) tree = std::make_unique<typename Node::node_type_clean>(std::forward<T>(v));
+            using type = std::decay_t<typename Node::node_type>;
+            if (!tree) tree = std::make_unique<type>(std::forward<T>(v));
             else if (v < tree->value_) insert(tree->left_, std::forward<T>(v), tag);
             else if (v > tree->value_) insert(tree->right_, std::forward<T>(v), tag);
             fix_invariant(tree, tag);

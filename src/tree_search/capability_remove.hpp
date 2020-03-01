@@ -19,24 +19,24 @@ namespace tree_search {
             else if (v < tree->value_) remove(tree->left_, v, tag);
             else if (v > tree->value_) remove(tree->right_, v, tag);
             else { // found
-                auto p = std::ref(tree);
                 if (tree->left_ && tree->right_) {
-                    for(p = tree->right_; p.get()->left_; p = p.get()->left_);
-                    tree->value_ = std::move(p.get()->value_);
+                    auto p = std::ref(tree->right_);
+                    while (p.get()->left_) p = p.get()->left_;
+                    std::swap(tree->value_, p.get()->value_);
+                    remove(p.get(), v, tag);
                 } 
                 else if (tree->left_) {
-                    tree->value_ = std::move(tree->left_->value_);
-                    p = tree->left_;
+                    std::swap(tree->value_, tree->left_->value_);
+                    remove(tree->left_, v, tag);
                 }
                 else if (tree->right_) {
-                    tree->value_ = std::move(tree->right_->value_);
-                    p = tree->right_;
+                    std::swap(tree->value_, tree->right_->value_);
+                    remove(tree->right_, v, tag);
                 }
                 else {
                     tree = nullptr;
                     return;
                 }
-                remove(p.get(), p.get()->value_, tag);
             }
             fix_invariant(tree, tag);
         }

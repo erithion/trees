@@ -23,7 +23,6 @@ namespace tree_search {
     }
 
     // TODO: check/resolve an existing element insertion
-    // TODO: implement remove
     template <typename T, typename Tree, std::enable_if_t<std::is_base_of_v<capability_insert, Tree>, int> = 0>
     void insert(Tree& tree, T&& v) { // universal reference
         aux::insert(aux::access(tree), std::forward<T>(v), capability_insert{});

@@ -2,6 +2,7 @@
 
 #include "type_traverse.hpp"
 #include "iterator_aux.hpp"
+#include "type_cti.hpp"
 #include "tree.hpp"
 
 #include <type_traits>
@@ -41,7 +42,7 @@ namespace tree_search {
         iterator() = default;
 
         template <typename ... U>
-        iterator(const node_type* root, U&&... u) // TODO: confirm you need universal references here
+        iterator(const node_type* root, const U&... u)
             : intersect_(u...), intersect_left_(u...), intersect_right_(u...) {
             this->stack_.emplace(cont{ root });
             this->step();

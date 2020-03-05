@@ -12,4 +12,7 @@ namespace tree_search {
 
     struct capability_insert_redblack {};
     struct capability_remove_redblack {};
+
+    struct capability_insert_avl {};
+    struct capability_remove_avl {};
 }

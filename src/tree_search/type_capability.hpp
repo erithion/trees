@@ -8,7 +8,9 @@ namespace tree_search {
     struct capability_traverse {};
     struct capability_remove {};
 
+    struct capability_insert_interval {};
     struct capability_search_interval {};
+    struct capability_remove_interval {};
 
     struct capability_insert_redblack {};
     struct capability_remove_redblack {};

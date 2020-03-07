@@ -11,20 +11,22 @@ namespace tree_search {
     namespace aux {
 
         template <typename Node>
-        void fix_invariant(std::unique_ptr<Node>& t, capability_remove) { }
+        void fixup(std::unique_ptr<Node>& t, capability_remove) { } // for the cases when a tree has some invariants to restore
 
         template <typename T, typename Node, typename Tag>
-        void remove(std::unique_ptr<Node>& tree, const T& v, const Tag& tag) {
+        void remove(std::unique_ptr<Node>& tree, const T& v, Tag tag) {
             if (!tree) return;
             else if (v < tree->value_) remove(tree->left_, v, tag);
             else if (v > tree->value_) remove(tree->right_, v, tag);
             else { // found
                 if (tree->left_ && tree->right_) {
-                    auto p = std::ref(tree->right_);
-                    while (p.get()->left_) p = p.get()->left_;
-                    std::swap(tree->value_, p.get()->value_);
-                    remove(p.get(), v, tag);
-                } 
+                    auto ptr = tree->right_.get();
+                    while (ptr->left_) ptr = ptr->left_.get();
+                    std::swap(tree->value_, ptr->value_);
+                    remove(tree->right_, v, tag); // going down is not necessary for BSTs, but might be for AVLs or RB-trees
+                                                  // it's still log_2(n) deep, though: 
+                                                  // in a tree with 10^15 (quadrillion) nodes there would be at most 50 recursive calls. 
+                }
                 else if (tree->left_) {
                     std::swap(tree->value_, tree->left_->value_);
                     remove(tree->left_, v, tag);
@@ -38,7 +40,7 @@ namespace tree_search {
                     return;
                 }
             }
-            fix_invariant(tree, tag);
+            fixup(tree, tag);
         }
     }
 

@@ -12,7 +12,7 @@ namespace tree_search {
 
     // versions for a node-like tree
     template <typename Node>
-    void rotate(std::unique_ptr<Node>& cur, rotate_right_tag&&) {
+    void rotate(std::unique_ptr<Node>& cur, rotate_right_tag) {
         if (!cur) return;
         auto left = std::move(cur->left_); // cur's parent ok; left's right and left are empty :( they were bound to cur->left
         cur->left_ = std::move(left->right_); // left->rights's parent points on self because it was bound previously to cur->left
@@ -20,7 +20,7 @@ namespace tree_search {
         cur = std::move(left);
     }
     template <typename Node>
-    void rotate(std::unique_ptr<Node>& cur, rotate_left_tag&&) {
+    void rotate(std::unique_ptr<Node>& cur, rotate_left_tag) {
         if (!cur) return;
         auto right = std::move(cur->right_);
         cur->right_ = std::move(right->left_);

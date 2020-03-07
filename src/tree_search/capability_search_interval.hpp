@@ -42,8 +42,8 @@ namespace tree_search {
         // Enables int type if interval tree requirements are satisfied
         template <typename Tag, typename Interval, typename Tree>
         using enable_interval_search_t =
-            std::enable_if_t< std::is_base_of_v<capability_search_interval, Tree>
-                && std::is_same_v<typename Tree::augment_type, aux::interval_augment<Interval, aux::node_type_t<Tree>>> // only for trees with interval_augment type within
+            std::enable_if_t<std::is_base_of_v<capability_search_interval, Tree>
+                && std::is_same_v<augment_type_t<Tree>, interval_augment<Interval, node_type_t<Tree>>> // only for trees with interval_augment type within
             , int>;
     }
 

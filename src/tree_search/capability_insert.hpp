@@ -1,6 +1,7 @@
 #pragma once
 
 #include "type_capability.hpp"
+#include "type_cti.hpp"
 
 #include <memory>
 #include <type_traits>
@@ -10,15 +11,14 @@ namespace tree_search {
     namespace aux {
 
         template <typename Node>
-        void fix_invariant(std::unique_ptr<Node>& t, capability_insert) { }
+        void fixup(std::unique_ptr<Node>& t, capability_insert) { } // for the cases when a tree has some invariants to restore
 
         template <typename T, typename Node, typename Tag, typename ... Aug>
-        void insert(std::unique_ptr<Node>& tree, const Tag& tag, T&& v, Aug&& ... pack) { // universal reference
-            using type = std::decay_t<typename Node::node_type>;
-            if (!tree) tree = std::make_unique<type>(std::forward<T>(v), std::forward<Aug>(pack)...);
+        void insert(std::unique_ptr<Node>& tree, Tag tag, T&& v, Aug&& ... pack) { // universal reference
+            if (!tree) tree = std::make_unique<node_type_t<Node>>(std::forward<T>(v), std::forward<Aug>(pack)...);
             else if (v < tree->value_) insert(tree->left_, tag, std::forward<T>(v), std::forward<Aug>(pack)...);
             else if (v > tree->value_) insert(tree->right_, tag, std::forward<T>(v), std::forward<Aug>(pack)...);
-            fix_invariant(tree, tag);
+            fixup(tree, tag);
         }
     }
 

@@ -4,7 +4,7 @@
 #include "type_traverse.hpp"
 #include "iterator.hpp"
 
-#include <functional>
+#include <functional> // std::function
 #include <type_traits>
 
 namespace tree_search {

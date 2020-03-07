@@ -3,6 +3,8 @@
 #include "type_capability.hpp"
 #include "iterator.hpp"
 
+#include <type_traits>
+
 namespace tree_search {
   
     template <typename Tag, typename Tree, std::enable_if_t<std::is_base_of_v<capability_traverse, Tree>, int> = 0>

@@ -2,7 +2,7 @@
 
 #include "type_capability.hpp"
 
-#include <memory>
+#include <memory> // std::unique_ptr
 #include <type_traits>
 
 namespace tree_search {

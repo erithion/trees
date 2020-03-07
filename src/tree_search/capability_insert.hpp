@@ -3,7 +3,7 @@
 #include "type_capability.hpp"
 #include "type_cti.hpp"
 
-#include <memory>
+#include <memory> // std::unique_ptr
 #include <type_traits>
 
 namespace tree_search {
@@ -22,7 +22,7 @@ namespace tree_search {
         }
     }
 
-    // TODO: check/resolve an existing element insertion
+    // TODO: check/resolve an existing element insertion. possible solution: insert/insert_replace
     template <typename T, typename Tree, std::enable_if_t<std::is_base_of_v<capability_insert, Tree>, int> = 0>
     void insert(Tree& tree, T&& v) { // universal reference
         aux::insert(aux::access(tree), capability_insert{}, std::forward<T>(v));

@@ -50,9 +50,13 @@ namespace tree_search {
         aux::remove(aux::access(tree), v, capability_remove{});
     }
 
-    // TODO: consider remove from std containers
     template <typename T, typename Tree, std::enable_if_t<std::is_base_of_v<capability_remove, Tree>, int> = 0>
     void remove(Tree& tree, std::initializer_list<T> ls) {
         for (auto&& v : ls) aux::remove(aux::access(tree), std::move(v), capability_remove{});
+    }
+
+    template <typename It, typename Tree, std::enable_if_t<std::is_base_of_v<capability_remove, Tree>, int> = 0>
+    void remove(Tree& tree, It begin, It end) {
+        while (begin != end) remove(tree, *begin++);
     }
 }

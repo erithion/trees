@@ -28,9 +28,13 @@ namespace tree_search {
         aux::insert(aux::access(tree), capability_insert{}, std::forward<T>(v));
     }
 
-    // TODO: consider inserting from std containers
     template <typename T, typename Tree, std::enable_if_t<std::is_base_of_v<capability_insert, Tree>, int> = 0>
     void insert(Tree& tree, std::initializer_list<T> ls) {
         for (auto&& v : ls) aux::insert(aux::access(tree), capability_insert{}, std::move(v));
+    }
+
+    template <typename It, typename Tree, std::enable_if_t<std::is_base_of_v<capability_insert, Tree>, int> = 0>
+    void insert(Tree& tree, It begin, It end) {
+        while (begin != end) insert(tree, *begin++);
     }
 }

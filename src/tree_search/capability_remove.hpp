@@ -43,7 +43,6 @@ namespace tree_search {
         }
     }
 
-    // TODO: check/resolve an existing element insertion. possible solution: insert/insert_replace
     template <typename T, typename Tree, std::enable_if_t<std::is_base_of_v<capability_remove, Tree>, int> = 0>
     void remove(Tree& tree, const T& v) {
         aux::remove(aux::access(tree), v, capability_remove{});

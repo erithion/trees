@@ -1,14 +1,14 @@
 #pragma once 
 
+#include "tree_search/type_compatibility.hpp"
+
 #include <memory> // unique_ptr
 #include <type_traits>
 #include <algorithm> // max
 
 namespace tree_search {
-    namespace aux {
 
-        template <typename, typename>
-        struct empty {};
+    namespace aux {
 
         template <typename Element, template <typename /*Element*/, typename /*Node*/> typename Augment>
         struct node 
@@ -57,12 +57,17 @@ namespace tree_search {
         }
     }
 
+    template <typename, typename>
+    struct empty_augment {};
+
     template <typename Element, template <typename /*Element*/, typename /*Node*/> typename Augment, typename ... Capabilities>
     struct tree : public Capabilities... { 
         using value_type = Element;
         using node_type = aux::node<value_type, Augment>;
         using augment_type = typename node_type::augment_type;
         using ptr_type = typename node_type::ptr_type;
+
+        aux::warning<Augment<value_type, node_type>, Capabilities...> warn_; // compile time warnings
     private:
         std::unique_ptr<node_type> root_; // no direct access. if anything, an access must be performed consiously via aux::access
 

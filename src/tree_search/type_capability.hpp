@@ -19,4 +19,8 @@ namespace tree_search {
 
     struct capability_insert_avl {};
     struct capability_remove_avl {};
+
+    struct capability_supress_warning_redblack {};
+    struct capability_supress_warning_interval {};
+    struct capability_supress_warning_avl {};
 }

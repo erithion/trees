@@ -63,5 +63,8 @@ namespace tree_search {
 
         template <typename T, typename ... Ts>
         constexpr bool is_one_of_v = std::disjunction_v<std::is_same<T, Ts>...>; // used in traverse/search
+
+        template <typename T, typename ... Ts>
+        using is_one_of_t = typename std::disjunction<std::is_same<T, Ts>...>::type; // used in traverse/search
     }
 }

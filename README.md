@@ -23,7 +23,9 @@ For more details see below.
 ## Usage
 
 ### Binary trees
-#### Simple but pretty useless tree 
+<details>
+ <summary>A simple but pretty useless tree</summary>
+ 
 ```cpp
 #include "tree_search/tree.hpp"
 
@@ -44,8 +46,10 @@ int main() {
 }
 ```
 In order to do more than that you need **capabilities**. Simply put, a capability enables a particular function like insert/remove/... for your tree. 
+</details>
 
-#### A tree with insert/remove capabilites
+<details>
+ <summary>A tree with insert/remove capabilites</summary>
 
 Capabilities are specified as additional template parameters. 
 For insert/remove it looks as follows:
@@ -71,8 +75,11 @@ int main() {
 }
 ```
 The motivation behind such a design is to have lightweight and less error-prone trees where you could not, say, accidentally remove an element(s) if the tree was initially insert-only by design.
+</details>
 
-#### More capabilities at hand
+<details>
+ <summary>More capabilities at hand</summary>
+
 ```cpp
 #include "tree_search/tree.hpp"
 
@@ -84,8 +91,7 @@ template <typename T>
 using tree = tree_search::tree<T, tree_search::empty_augment
                                 , tree_search::capability_traverse
                                 , tree_search::capability_search
-                                , tree_search::capability_insert>;
-                                
+                                , tree_search::capability_insert>;                                
 ```
 Now you can **traverse** the tree:
 ```cpp
@@ -138,8 +144,10 @@ int main() {
      return 0;
 }
 ```
+</details>
 
-#### Manually balancing tree
+<details>
+ <summary>Manually balancing tree</summary>
 
 Binary tree may loose its efficiency in searching once it renders unbalanced. One possible option to mitigate this issue is to manually balance the tree. And that's how you declare that you'd like that capability:
 ```cpp
@@ -165,7 +173,11 @@ int main() {
     return 0;
 }
 ```
-#### Auto-balancing trees
+</details>
+
+<details>
+ <summary>Auto-balancing trees</summary>
+
 Alternative to manual balancing is to use either AVL or Red-black tree.
 The following enables AVL tree:
 ```cpp
@@ -188,11 +200,13 @@ template <typename T>
 using tree = tree_search::tree<T, tree_search::redblack_augment
                                 , tree_search::capability_insert_redblack
                                 , tree_search::capability_remove_redblack>;
-
 ```
 Now every insert or remove will automatically balance your tree. Other capabilities as template parameters you may specify at will.
+</details>
 
-#### Interval tree
+<details>
+ <summary>Interval tree</summary>
+
 Useful if you work with intervals.
 ```cpp
 #include "tree_search/tree_interval.hpp"
@@ -229,6 +243,8 @@ int main() {
     return 0;
 }
 ```
+</details>
+
 ### Fenwick tree
 
 ### Segment tree

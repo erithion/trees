@@ -1,4 +1,0 @@
-idea from two-sum question - find indiceis of two elems that sum up to some int:
-  O(N) can be implemented with hash table
-  O(N log N) can be implemented with transformation to a binary tree 
-       with preserving original indicies and searching a complement for the sum in that tree

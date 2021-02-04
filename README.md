@@ -45,7 +45,7 @@ int main() {
     return 0;
 }
 ```
-In order to do more than that you need **capabilities**. Simply put, a capability enables a particular function like insert/remove/... for your tree. 
+In order to do more than that, like insert or remove elements, you need **capabilities**. See below. 
 </details>
 
 <details>
@@ -74,7 +74,8 @@ int main() {
     return 0;
 }
 ```
-The motivation behind such a design is to have less error-prone trees where you could not, say, accidentally remove the element(s) if the tree was initially insert-only by design, and let the compiler make sure that your decisions are followed throughout the entire code that would use your tree.
+Without extending your tree with a particular capability, say insert, explicitly, the call to insert function will generate  a compile-time error.
+The motivation behind such a design is to have less error-prone trees where you could not, say, accidentally remove the element(s) if the tree was initially insert-only by design. And the most efficient way is to enforce the compiler to track those things and do that regardless of where your tree eventually would turn up and who would use it.
 </details>
 
 <details>

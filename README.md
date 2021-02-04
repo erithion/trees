@@ -74,7 +74,7 @@ int main() {
     return 0;
 }
 ```
-The motivation behind such a design is to have lightweight and less error-prone trees where you could not, say, accidentally remove an element(s) if the tree was initially insert-only by design.
+The motivation behind such a design is to have less error-prone trees where you could not, say, accidentally remove the element(s) if the tree was initially insert-only by design, and let the compiler make sure that your decisions are followed throughout the entire code that would use your tree.
 </details>
 
 <details>
@@ -99,11 +99,6 @@ int main() {
     tree<char> bin;
     insert(bin, { 'F', 'B', 'A', 'D', 'C', 'E', 'G', 'I', 'H' });
     
-    // iterators; pre-order
-    auto rg1 = traverse(tree_search::tag_preorder{}, bin);
-    std::string res1(rg1.begin_, rg1.end_);
-    assert(res1 == "FBADCEGIH");
-    
     // range-loop; in-order
     std::string res2 = {};
     for (auto v : traverse(tree_search::tag_inorder{}, bin)) res2.push_back(v);
@@ -123,25 +118,11 @@ int main() {
     tree<char> bin;
     insert(bin, { 'F', 'B', 'A', 'D', 'C', 'E', 'G', 'I', 'H' });
         
-   // preorder
-    {
-        auto it = search(ts::tag_preorder{}, bin, [](int v) {return v == 'F' || v == 'D' || v == 'E'; });
-        std::vector<int> res(begin(it), end(it));
-        assert(res == std::vector<int>({ 'F', 'D', 'E' }));
-    }
-    // inorder
-    {
-        auto it = search(ts::tag_inorder{}, bin, [](int v) {return v == 'D' || v == 'E' || v == 'F'; });
-        std::vector<int> res(begin(it), end(it));
-        assert(res == std::vector<int>({ 'D', 'E', 'F' }));
-    }
-    // postorder
-    {
-        auto it = search(ts::tag_postorder{}, bin, [](int v) {return v == 'D' || v == 'E' || v == 'F'; });
-        std::vector<int> res(begin(it), end(it));
-        assert(res == std::vector<int>({ 'E', 'D', 'F' }));
-    }
-     return 0;
+    auto it = search(tree_search::tag_inorder{}, bin, [](int v) {return v == 'D' || v == 'E' || v == 'F'; });
+    std::vector<int> res(begin(it), end(it));
+    assert(res == std::vector<int>({ 'D', 'E', 'F' }));
+
+    return 0;
 }
 ```
 </details>
@@ -149,7 +130,7 @@ int main() {
 <details>
  <summary>Manually balancing tree</summary>
 
-Binary tree may loose its efficiency in searching once it renders unbalanced. One possible option to mitigate this issue is to manually balance the tree. And that's how you declare that you'd like that capability:
+Binary tree looses its efficiency as a search means once it renders unbalanced. One possible option to fix this is to manually balance the tree. Below is how you might declare that you'd like that capability:
 ```cpp
 #include "tree_search/tree.hpp"
 #include "tree_search/tree_balance.hpp"
@@ -178,8 +159,8 @@ int main() {
 <details>
  <summary>Auto-balancing trees</summary>
 
-Alternative to manual balancing is to use either AVL or Red-black tree.
-The following enables AVL tree:
+Alternative to manual balancing is to use trees that automatically and efficiently balance themselves upon modification. In particular, AVL or Red-black tree.
+The following is a type declaration of AVL tree:
 ```cpp
 #include "tree_search/tree_avl.hpp"
 #include "tree_search/tree.hpp"
@@ -189,7 +170,7 @@ using tree = tree_search::tree<T, tree_search::avl_augment
                                 , tree_search::capability_insert_avl
                                 , tree_search::capability_remove_avl>;
 ```
-And Red-black tree:
+And this is how you would declare Red-black tree type:
 ```cpp
 #include "tree_search/tree_redblack.hpp"
 #include "tree_search/capability_insert_redblack.hpp"

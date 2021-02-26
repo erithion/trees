@@ -201,7 +201,7 @@ using tree = tree_search::tree<std::pair< T, T>, tree_search::interval_augment
                                                , tree_search::capability_remove_interval
                                                , tree_search::capability_search_interval>;
 ```
-And for example having a set of intervals you would like to get all intervals that are within a specified range:
+And for example having a set of intervals you would like to get all intervals that lie within a specified range completely or intersect it partially:
 ```cpp
 int main() {
     tree<int> bin;
